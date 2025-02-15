@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: lot-state-poc
+  # DB settings
+  datasource:
+    url: jdbc:postgresql://localhost:5432/statedb
+    username: admin
+    password: statetest
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging.level.org.springframework.statemachine: DEBUG

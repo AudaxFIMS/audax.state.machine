@@ -1,0 +1,12 @@
+services:
+  postgresdb:
+    container_name: state.machine.test.db
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=statetest
+      - POSTGRES_DB=statedb
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
