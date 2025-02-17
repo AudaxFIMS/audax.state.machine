@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,24 +23,12 @@ public class OrderController {
 		);
 	}
 	
-	@PostMapping("/{orderId}/process")
-	public ResponseEntity<?> processOrder(@PathVariable Long orderId) {
-		return processEvent(orderId, OrderEvent.PROCESS_ORDER);
-	}
-	
-	@PostMapping("/{orderId}/ship")
-	public ResponseEntity<?> shipOrder(@PathVariable Long orderId) {
-		return processEvent(orderId, OrderEvent.SHIP_ORDER);
-	}
-	
-	@PostMapping("/{orderId}/deliver")
-	public ResponseEntity<?> deliverOrder(@PathVariable Long orderId) {
-		return processEvent(orderId, OrderEvent.DELIVER_ORDER);
-	}
-	
-	@PostMapping("/{orderId}/cancel")
-	public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
-		return processEvent(orderId, OrderEvent.CANCEL_ORDER);
+	@PostMapping("/{orderId}")
+	public ResponseEntity<?> processOrder(
+			@PathVariable Long orderId,
+			@RequestParam OrderEvent event
+	) {
+		return processEvent(orderId, event);
 	}
 	
 	private ResponseEntity<?> processEvent(Long orderId, OrderEvent event) {

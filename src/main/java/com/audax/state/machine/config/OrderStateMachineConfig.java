@@ -30,18 +30,37 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
 	public void configure(StateMachineStateConfigurer<OrderState, OrderEvent> states) throws Exception {
 		states.withStates()
 				.initial(OrderState.NEW)
-				.states(EnumSet.of(OrderState.NEW, OrderState.PROCESSING, OrderState.SHIPPED, OrderState.DELIVERED, OrderState.CANCELED));
+				.states(EnumSet.allOf(OrderState.class))
+				.end(OrderState.ORDER_COMPLETED);
 	}
 	
 	@Override
 	public void configure(StateMachineTransitionConfigurer<OrderState, OrderEvent> transitions) throws Exception {
-		transitions.withExternal().source(OrderState.NEW).target(OrderState.PROCESSING).event(OrderEvent.PROCESS_ORDER)
+		transitions
+				.withExternal().source(OrderState.NEW).target(OrderState.CANCELED).event(OrderEvent.CANCEL_ORDER)
 				.and()
-				.withExternal().source(OrderState.PROCESSING).target(OrderState.SHIPPED).event(OrderEvent.SHIP_ORDER)
+				.withExternal().source(OrderState.NEW).target(OrderState.PROCESSING).event(OrderEvent.PROCESS_ORDER)
 				.and()
-				.withExternal().source(OrderState.SHIPPED).target(OrderState.DELIVERED).event(OrderEvent.DELIVER_ORDER)
+				.withExternal().source(OrderState.PROCESSING).target(OrderState.SHIPPING_WAITING_LABEL).event(OrderEvent.SHIPPING_START)
 				.and()
-				.withExternal().source(OrderState.NEW).target(OrderState.CANCELED).event(OrderEvent.CANCEL_ORDER);
+				.withExternal().source(OrderState.SHIPPING_WAITING_LABEL).target(OrderState.SHIPPING_STAGE).event(OrderEvent.SHIPPING_LABEL_CREATED)
+				.and()
+				.withExternal().source(OrderState.SHIPPING_STAGE).target(OrderState.SHIPPING_DONE).event(OrderEvent.SHIPPING_DONE)
+				// Automatic transitions
+				.and()
+				.withExternal().source(OrderState.SHIPPING_DONE).target(OrderState.DELIVERING_WAITING_LABEL)
+				.action(context -> System.out.println("Auto-transition from SHIPPING_DONE to DELIVERING_WAITING_LABEL"))
+				// }}
+				.and()
+				.withExternal().source(OrderState.DELIVERING_WAITING_LABEL).target(OrderState.DELIVERING_STAGE).event(OrderEvent.DELIVERY_LABEL_CREATED)
+				.and()
+				.withExternal().source(OrderState.DELIVERING_STAGE).target(OrderState.DELIVERING_DONE).event(OrderEvent.DELIVERY_DONE)
+				// Automatic transitions
+				.and()
+				.withExternal().source(OrderState.DELIVERING_DONE).target(OrderState.ORDER_COMPLETED)
+				.action(context -> System.out.println("Auto-transition from DELIVERY_DONE to ORDER_COMPLETED"))
+				// }}
+		;
 	}
 	
 	@Override
