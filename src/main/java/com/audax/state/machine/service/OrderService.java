@@ -1,12 +1,16 @@
 package com.audax.state.machine.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.audax.state.machine.entity.OrderEntity;
 import com.audax.state.machine.event.OrderEvent;
+import com.audax.state.machine.exceptions.ResourceNotFoundException;
+import com.audax.state.machine.graphviz.GraphvizExporter;
 import com.audax.state.machine.repository.OrderRepository;
 import com.audax.state.machine.state.OrderState;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
@@ -27,7 +31,7 @@ public class OrderService {
 	
 	public OrderEntity createOrder() {
 		OrderEntity order = new OrderEntity();
-		order.setState(OrderState.NEW);
+		order.setState(List.of(OrderState.NEW).toString());
 		order = orderRepository.save(order);
 		return order;
 	}
@@ -76,8 +80,8 @@ public class OrderService {
 	) {
 		future.completeExceptionally(
 				new IllegalStateException(
-						String.format("Event [%s] for Order: %s with state: [%s]- not ACCEPTABLE", event, orderId,
-								stateMachine.getState().getId())
+						String.format("Event [%s] for Order: %s with state: %s- not ACCEPTABLE", event, orderId,
+								stateMachine.getState().getIds())
 				)
 		);
 	}
@@ -87,9 +91,22 @@ public class OrderService {
 			StateMachine<OrderState, OrderEvent> stateMachine,
 			OrderEntity order
 	) {
-		order.setState(stateMachine.getState().getId());
+		order.setState(stateMachine.getState().getIds().toString());
 		orderRepository.save(order);
 		
 		future.complete(null);
+	}
+	
+	@SneakyThrows
+	public String graphviz(Long orderId) {
+		OrderEntity order = orderRepository.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException("Lot not found"));
+		
+		GraphvizExporter<OrderState, OrderEvent> exporter = new GraphvizExporter<>();
+		
+		StateMachine<OrderState, OrderEvent> stateMachine =
+				stateMachineService.acquireStateMachine(orderId.toString());
+		
+		return exporter.export(stateMachine);
 	}
 }

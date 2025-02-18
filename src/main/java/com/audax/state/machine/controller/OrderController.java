@@ -3,11 +3,14 @@ package com.audax.state.machine.controller;
 import com.audax.state.machine.event.OrderEvent;
 import com.audax.state.machine.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,5 +44,12 @@ public class OrderController {
 					.unprocessableEntity()
 					.body(e.getMessage());
 		}
+	}
+	
+	@GetMapping(value = "/{orderId}/graphviz", produces = MediaType.TEXT_PLAIN_VALUE)
+	public @ResponseBody String execute(
+			@PathVariable Long orderId
+	) {
+		return orderService.graphviz(orderId);
 	}
 }
