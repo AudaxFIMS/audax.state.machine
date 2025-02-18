@@ -1,7 +1,7 @@
 package com.audax.state.machine.service;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -12,10 +12,12 @@ import com.audax.state.machine.exceptions.ResourceNotFoundException;
 import com.audax.state.machine.graphviz.GraphvizExporter;
 import com.audax.state.machine.repository.OrderRepository;
 import com.audax.state.machine.state.OrderState;
-import guru.nidi.graphviz.parse.Parser;
+
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.parse.Parser;
+
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
@@ -37,7 +39,7 @@ public class OrderService {
 	
 	public OrderEntity createOrder() {
 		OrderEntity order = new OrderEntity();
-		order.setState(List.of(OrderState.NEW).toString());
+		order.setStates(List.of(OrderState.NEW));
 		order = orderRepository.save(order);
 		return order;
 	}
@@ -97,7 +99,7 @@ public class OrderService {
 			StateMachine<OrderState, OrderEvent> stateMachine,
 			OrderEntity order
 	) {
-		order.setState(stateMachine.getState().getIds().toString());
+		order.setStates(stateMachine.getState().getIds());
 		orderRepository.save(order);
 		
 		future.complete(null);
@@ -105,7 +107,7 @@ public class OrderService {
 	
 	@SneakyThrows
 	public BufferedImage graphviz(Long orderId) {
-		orderRepository.findById(orderId)
+		OrderEntity order = orderRepository.findById(orderId)
 				.orElseThrow(() -> new ResourceNotFoundException("Lot not found"));
 		
 		GraphvizExporter<OrderState, OrderEvent> exporter = new GraphvizExporter<>();
@@ -113,11 +115,21 @@ public class OrderService {
 		StateMachine<OrderState, OrderEvent> stateMachine =
 				stateMachineService.acquireStateMachine(orderId.toString());
 		
-		String dotSrc = exporter.export(stateMachine);
+		OrderState activeState = order.getStates().stream().toList().getLast();
 		
-		Parser graphParser =  new Parser();
-		MutableGraph g = graphParser.read(dotSrc);
-
-		return Graphviz.fromGraph(g).render(Format.PNG).toImage();
+		String dotSrc = exporter.export(stateMachine, activeState);
+		
+		try {
+			// Create a Parser instance
+			Parser parser = new Parser();
+			
+			// Parse the DOT string
+			MutableGraph graph = parser.read(dotSrc);
+			
+			// Render the graph to a file
+			return Graphviz.fromGraph(graph).render(Format.PNG).toImage();
+		} catch (IOException e) {
+			throw e;
+		}
 	}
 }

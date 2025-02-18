@@ -1,5 +1,11 @@
 package com.audax.state.machine.entity;
 
+import java.util.Collection;
+
+import com.audax.state.machine.entity.converter.StateListConverter;
+import com.audax.state.machine.state.OrderState;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,5 +19,8 @@ public class OrderEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private String state;
+	
+	@Column
+	@Convert(converter = StateListConverter.class)
+	private Collection<OrderState> states;
 }

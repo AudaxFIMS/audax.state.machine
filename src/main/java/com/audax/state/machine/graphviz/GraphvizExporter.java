@@ -60,7 +60,7 @@ public class GraphvizExporter<S, E> {
 		for (State<S, E> state : stateMachine.getStates()) {
 			if (state instanceof ObjectState<S, E>) {
 				if (state.getId() == activeState) {
-					dot.append(prefix).append(state.getId()).append(" [fillcolor=\"lightgreen\"];\n");
+					dot.append(prefix).append(state.getId()).append(" [style=filled][fillcolor=lightgreen];\n");
 				} else {
 					dot.append(prefix).append(state.getId()).append(";\n");
 				}
@@ -89,13 +89,10 @@ public class GraphvizExporter<S, E> {
 		
 	}
 	
-	public String export(StateMachine<S, E> stateMachine) {
+	public String export(StateMachine<S, E> stateMachine, S activeState) {
 		StringBuilder dot = new StringBuilder();
 		
-		dot.append("digraph StateMachine {\n")
-				.append("node [style=filled];\n");
-		
-		S activeState = stateMachine.getState().getIds().stream().toList().getLast();
+		dot.append("digraph StateMachine {\n");
 		
 		addSubGraph(stateMachine, dot, null, "\t", activeState);
 		dot.append("}\n");

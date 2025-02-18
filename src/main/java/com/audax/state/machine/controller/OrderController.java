@@ -61,8 +61,7 @@ public class OrderController {
 		// Convert BufferedImage to byte array
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ImageIO.write(image, "PNG", byteArrayOutputStream);
-		byte[] imageBytes = byteArrayOutputStream.toByteArray();
 		
-		return imageBytes;
+		return byteArrayOutputStream.toByteArray();
 	}
 }
