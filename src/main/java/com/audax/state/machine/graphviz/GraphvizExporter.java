@@ -10,25 +10,24 @@ import org.springframework.statemachine.transition.Transition;
 ** RIGHT GRAPH EXAMPLE **
 
 digraph StateMachine {
-node [style=filled];
-	CANCELED;
-	ORDER_COMPLETED;
+	PROCESSING;
 	subgraph cluster_DELIVERING {
 		label="DELIVERING";
 		style=dashed;
-		DELIVERING_DONE;
 		DELIVERING_STAGE;
 		DELIVERING_WAITING_LABEL;
+		DELIVERING_DONE;
 		DELIVERING_WAITING_LABEL -> DELIVERING_STAGE [label="DELIVERY_LABEL_CREATED"];
 		DELIVERING_STAGE -> DELIVERING_DONE [label="DELIVERY_DONE"];
 	}
-	PROCESSING;
+	CANCELED;
+	ORDER_COMPLETED;
 	subgraph cluster_SHIPPING {
 		label="SHIPPING";
 		style=dashed;
-		SHIPPING_STAGE;
-		SHIPPING_WAITING_LABEL [fillcolor="lightgreen"];
 		SHIPPING_DONE;
+		SHIPPING_STAGE [style=filled][fillcolor=lightgreen];
+		SHIPPING_WAITING_LABEL;
 		SHIPPING_WAITING_LABEL -> SHIPPING_STAGE [label="SHIPPING_LABEL_CREATED"];
 		SHIPPING_STAGE -> SHIPPING_DONE [label="SHIPPING_DONE"];
 	}
