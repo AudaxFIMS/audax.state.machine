@@ -100,6 +100,10 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
 								System.out.println("Auto-transition from SHIPPING_DONE to DELIVERING_WAITING_LABEL");
 							}
 					)
+				.and().withExternal()
+					.source(OrderState.SHIPPING_DONE)  // Last substate of SHIPPING
+					.target(OrderState.DELIVERING_WAITING_LABEL) // First substate of DELIVERING
+					.event(OrderEvent.NEXT_STEP)
 				// }}
 				//======================================================================================================
 				// DELIVERING Process
@@ -116,16 +120,21 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
 					.action(parentStateCompleteAction())
 				// **Auto transition from DELIVERING_DONE to ORDER_COMPLETED**
 				.and().withExternal()
-				.source(OrderState.DELIVERING)
-				.target(OrderState.ORDER_COMPLETED)
-				.event(OrderEvent.NEXT_STEP)
-				.guard(new DeliveringDoneGuard())
-				.action(
-						context -> {
-							System.out.println("Auto-transition from DELIVERY_DONE to ORDER_COMPLETED");
-						}
-				)
+					.source(OrderState.DELIVERING)
+					.target(OrderState.ORDER_COMPLETED)
+					.event(OrderEvent.NEXT_STEP)
+					.guard(new DeliveringDoneGuard())
+					.action(
+							context -> {
+								System.out.println("Auto-transition from DELIVERY_DONE to ORDER_COMPLETED");
+							}
+					)
+				.and().withExternal()
+					.source(OrderState.DELIVERING_DONE)
+					.target(OrderState.ORDER_COMPLETED)
+					.event(OrderEvent.NEXT_STEP)
 				// }}
+				
 		;
 	}
 	
