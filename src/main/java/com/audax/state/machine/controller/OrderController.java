@@ -1,5 +1,11 @@
 package com.audax.state.machine.controller;
 
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import com.audax.state.machine.event.OrderEvent;
 import com.audax.state.machine.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +52,17 @@ public class OrderController {
 		}
 	}
 	
-	@GetMapping(value = "/{orderId}/graphviz", produces = MediaType.TEXT_PLAIN_VALUE)
-	public @ResponseBody String execute(
+	@GetMapping(value = "/{orderId}/graphviz", produces = MediaType.IMAGE_PNG_VALUE)
+	public  @ResponseBody byte[] execute(
 			@PathVariable Long orderId
-	) {
-		return orderService.graphviz(orderId);
+	) throws IOException {
+		BufferedImage image = orderService.graphviz(orderId);
+		
+		// Convert BufferedImage to byte array
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ImageIO.write(image, "PNG", byteArrayOutputStream);
+		byte[] imageBytes = byteArrayOutputStream.toByteArray();
+		
+		return imageBytes;
 	}
 }

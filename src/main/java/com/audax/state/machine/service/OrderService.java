@@ -1,5 +1,7 @@
 package com.audax.state.machine.service;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -10,6 +12,10 @@ import com.audax.state.machine.exceptions.ResourceNotFoundException;
 import com.audax.state.machine.graphviz.GraphvizExporter;
 import com.audax.state.machine.repository.OrderRepository;
 import com.audax.state.machine.state.OrderState;
+import guru.nidi.graphviz.parse.Parser;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.MutableGraph;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
@@ -98,8 +104,8 @@ public class OrderService {
 	}
 	
 	@SneakyThrows
-	public String graphviz(Long orderId) {
-		OrderEntity order = orderRepository.findById(orderId)
+	public BufferedImage graphviz(Long orderId) {
+		orderRepository.findById(orderId)
 				.orElseThrow(() -> new ResourceNotFoundException("Lot not found"));
 		
 		GraphvizExporter<OrderState, OrderEvent> exporter = new GraphvizExporter<>();
@@ -107,6 +113,11 @@ public class OrderService {
 		StateMachine<OrderState, OrderEvent> stateMachine =
 				stateMachineService.acquireStateMachine(orderId.toString());
 		
-		return exporter.export(stateMachine);
+		String dotSrc = exporter.export(stateMachine);
+		
+		Parser graphParser =  new Parser();
+		MutableGraph g = graphParser.read(dotSrc);
+
+		return Graphviz.fromGraph(g).render(Format.PNG).toImage();
 	}
 }
