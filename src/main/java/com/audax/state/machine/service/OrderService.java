@@ -113,7 +113,7 @@ public class OrderService {
 		GraphvizExporter<OrderState, OrderEvent> exporter = new GraphvizExporter<>();
 		
 		StateMachine<OrderState, OrderEvent> stateMachine =
-				stateMachineService.acquireStateMachine(orderId.toString());
+				stateMachineService.acquireStateMachine(orderId.toString(), false);
 		
 		OrderState activeState = order.getStates().stream().toList().getLast();
 		
