@@ -1,13 +1,21 @@
 spring:
   application:
     name: lot-state-poc
-  # DB settings
-  datasource:
-    url: jdbc:postgresql://localhost:5432/statedb
-    username: admin
-    password: statetest
+  autoconfigure:
+    exclude: org.springframework.statemachine.boot.autoconfigure.StateMachineJpaRepositoriesAutoConfiguration
   jpa:
     hibernate:
       ddl-auto: update
+# DB settings
+audax:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/statemachine
+    username: statemachine
+    password: statemachine
+statemachine:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/statemachine
+    username: statemachine
+    password: statemachine
 
 logging.level.org.springframework.statemachine: DEBUG

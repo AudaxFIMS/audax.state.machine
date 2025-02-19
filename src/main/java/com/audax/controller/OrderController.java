@@ -1,4 +1,4 @@
-package com.audax.state.machine.controller;
+package com.audax.controller;
 
 import javax.imageio.ImageIO;
 

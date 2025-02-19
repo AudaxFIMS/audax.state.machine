@@ -6,18 +6,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import com.audax.state.machine.entity.OrderEntity;
+import com.audax.entity.OrderEntity;
 import com.audax.state.machine.event.OrderEvent;
-import com.audax.state.machine.exceptions.ResourceNotFoundException;
 import com.audax.state.machine.graphviz.GraphvizExporter;
-import com.audax.state.machine.repository.OrderRepository;
+import com.audax.repository.OrderRepository;
 import com.audax.state.machine.state.OrderState;
-
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
-
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
@@ -108,7 +105,7 @@ public class OrderService {
 	@SneakyThrows
 	public BufferedImage graphviz(Long orderId) {
 		OrderEntity order = orderRepository.findById(orderId)
-				.orElseThrow(() -> new ResourceNotFoundException("Lot not found"));
+				.orElseThrow(() -> new IllegalStateException("Lot not found"));
 		
 		GraphvizExporter<OrderState, OrderEvent> exporter = new GraphvizExporter<>();
 		

@@ -1,4 +1,4 @@
-package com.audax.state.machine.entity.converter;
+package com.audax.entity.converter;
 
 import java.util.Arrays;
 import java.util.Collection;
