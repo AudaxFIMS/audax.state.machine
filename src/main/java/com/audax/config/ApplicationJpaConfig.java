@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-		basePackages = {"com.audax"},
+		basePackages = {"com.audax.jpa"},
 		entityManagerFactoryRef = "applicationEntityManagerFactory",
 		transactionManagerRef = "applicationTransactionManager"
 )
@@ -38,7 +38,7 @@ public class ApplicationJpaConfig {
 			@Qualifier("applicationDataSource") DataSource dataSource) {
 		return builder
 				.dataSource(dataSource)
-				.packages("com.audax")
+				.packages("com.audax.jpa")
 				.persistenceUnit("applicationPU")
 				.build();
 	}
