@@ -1,8 +1,8 @@
-package com.audax.entity;
+package com.audax.jpa.entity;
 
 import java.util.Collection;
 
-import com.audax.entity.converter.StateListConverter;
+import com.audax.jpa.entity.converter.StateListConverter;
 import com.audax.state.machine.state.OrderState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

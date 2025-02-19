@@ -1,6 +1,6 @@
-package com.audax.repository;
+package com.audax.jpa.repository;
 
-import com.audax.entity.OrderEntity;
+import com.audax.jpa.entity.OrderEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

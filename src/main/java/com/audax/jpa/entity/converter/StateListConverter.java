@@ -1,4 +1,4 @@
-package com.audax.entity.converter;
+package com.audax.jpa.entity.converter;
 
 import java.util.Arrays;
 import java.util.Collection;

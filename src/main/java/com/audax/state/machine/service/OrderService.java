@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import com.audax.entity.OrderEntity;
+import com.audax.jpa.entity.OrderEntity;
 import com.audax.state.machine.event.OrderEvent;
 import com.audax.state.machine.graphviz.GraphvizExporter;
-import com.audax.repository.OrderRepository;
+import com.audax.jpa.repository.OrderRepository;
 import com.audax.state.machine.state.OrderState;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
