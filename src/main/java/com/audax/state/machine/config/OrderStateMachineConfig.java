@@ -100,6 +100,7 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
 								System.out.println("Auto-transition from SHIPPING_DONE to DELIVERING_WAITING_LABEL");
 							}
 					)
+				// ** this STEP added just for correct creation of relation links on graph between 2 MAIN State **
 				.and().withExternal()
 					.source(OrderState.SHIPPING_DONE)  // Last substate of SHIPPING
 					.target(OrderState.DELIVERING_WAITING_LABEL) // First substate of DELIVERING
@@ -129,6 +130,7 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
 								System.out.println("Auto-transition from DELIVERY_DONE to ORDER_COMPLETED");
 							}
 					)
+				// ** this STEP added just for correct creation of relation links on graph between 2 MAIN State **
 				.and().withExternal()
 					.source(OrderState.DELIVERING_DONE)
 					.target(OrderState.ORDER_COMPLETED)
