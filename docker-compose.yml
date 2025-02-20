@@ -10,3 +10,15 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432
+
+  applicationdb:
+    container_name: application.db
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      - POSTGRES_USER=application
+      - POSTGRES_PASSWORD=application
+      - POSTGRES_DB=application
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 5433:5432

@@ -10,9 +10,9 @@ spring:
 # Default application datasource (can be another DB not the same with State machine)
 audax:
   datasource:
-    jdbc-url: jdbc:postgresql://localhost:5432/statemachine
-    username: statemachine
-    password: statemachine
+    jdbc-url: jdbc:postgresql://localhost:5433/application
+    username: application
+    password: application
 # State machine datasource
 statemachine:
   datasource:
